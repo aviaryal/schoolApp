@@ -19,6 +19,6 @@ export default (reducer, actions, defaultvalue) =>{
         );
     };
 
-    return {Context,Provider}
+    return {Context,Provider};
     
 };

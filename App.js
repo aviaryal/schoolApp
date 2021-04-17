@@ -3,10 +3,13 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from "@react-navigation/native";
 import BottomTabNavigator from "./src/Navigation/ButtomTapNavigator";
+import SignInScreen from './src/Screens/SignInScreen';
 export default function App() {
+  const signIn= false;
   return (
     <NavigationContainer>
-      <BottomTabNavigator/>
+      {signIn ? (<BottomTabNavigator/>): (<SignInScreen/>)}
+      
     </NavigationContainer>
   );
 }
