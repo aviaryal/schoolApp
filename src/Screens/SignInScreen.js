@@ -8,16 +8,18 @@ const SignInScreen= ()=>{
     const [email,setEmail] = useState('');
     const [password, setPassword] = useState('');
     return (
-        <View>
+        <View style={styles.container}>
             <Text>Email</Text>
             <TextInput
                 value={email}
                 autoCapitalize='none'
                 autoCorrect={false}
                 onChangeText={setEmail}
+                style= {styles.textInput}
             />
             <Text>Password</Text>
             <TextInput
+                style= {styles.textInput}
                 value={password}
                 autoCapitalize='none'
                 autoCorrect={false}
@@ -33,7 +35,19 @@ const SignInScreen= ()=>{
 }
 
 const styles = StyleSheet.create({
-
+    container: {
+        
+        paddingHorizontal: 20,
+        paddingTop: 20
+    },
+    textInput: {
+        borderWidth:1,
+        flexDirection:'row',
+        marginTop: 12,
+        paddingLeft: 10,
+        height:20,
+        color: '#05375a',
+    },
 });
 
 export default SignInScreen;

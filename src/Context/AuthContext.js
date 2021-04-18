@@ -12,7 +12,9 @@ const authReducer = (state,action) =>{
 const signIn = (dispatch) => async ({email,password}) =>{
     try
     {
+        console.log(email);
         const response = await schoolapi.post('/signin',{email,password});
+        
         
     }
     catch(err){
