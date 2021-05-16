@@ -1,10 +1,16 @@
 import React from 'react';
-import {View,Text,StyleSheet} from 'react-native';
-
+import {View,Text,StyleSheet, TouchableOpacity} from 'react-native';
+import {AuthContext} from '../Context/AuthContext.js';
 const ProfileScreen= ()=>{
+    const {auth, state} = React.useContext(AuthContext);
+    const {signOut} = auth;
+    console.log(signOut);
     return (
         <View>
-            <Text>Profile</Text>
+             <TouchableOpacity style={styles.button}
+                onPress={()=>signOut()}>
+                <Text> Sign Out</Text>
+            </TouchableOpacity>
         </View>
     );
 }

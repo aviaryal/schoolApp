@@ -3,6 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from '../Screens/HomeScreen';
 import ProfileScreen from '../Screens/ProfileScreen';
 import NotificationScreen from '../Screens/NotificationScreen';
+import SignInScreen from '../Screens/SignInScreen';
 
 const HomeStack = createStackNavigator();
 
@@ -34,4 +35,13 @@ const NotificationStackScreen = ()=>{
     );
 }
 
-export {HomeStackScreen,ProfileStackScreen,NotificationStackScreen};
+const AuthStack = createStackNavigator();
+const AuthStackScreen = ()=>{
+    return (
+        <AuthStack.Navigator>
+            <AuthStack.Screen name = "SignIn" component={SignInScreen}/>
+        </AuthStack.Navigator>
+    )
+}
+
+export {HomeStackScreen,ProfileStackScreen,NotificationStackScreen, AuthStackScreen};

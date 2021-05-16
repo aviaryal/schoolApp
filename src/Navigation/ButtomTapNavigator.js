@@ -6,9 +6,7 @@ const ButtomTab = createBottomTabNavigator();
 
 const ButtomTapNavigator= ()=>{
     return (
-    <ButtomTab.Navigator 
-        //screenOptions
-    >
+    <ButtomTab.Navigator >
         <ButtomTab.Screen
             name = "Home"
             component={HomeStackScreen} 
