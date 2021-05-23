@@ -1,5 +1,6 @@
 import React from 'react';
-
+import schoolApi from '../api/schoolapi';
+import * as SecureStore from 'expo-secure-store';
 
 export const AuthContext = React.createContext();
 
@@ -37,22 +38,60 @@ export function useAuth(){
  
     const auth = React.useMemo(
         () => ({
-          signIn: async (email,password) => {
+          signIn: async data => {
             // In a production app, we need to send some data (usually username, password) to server and get a token
             // We will also need to handle errors if sign in failed
             // After getting token, we need to persist the token using `SecureStore` or any other encrypted storage
             // In the example, we'll use a dummy token
-            console.log(email);
-            dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' });
+            console.log(data.email);
+            
+            try{
+                const response = await schoolApi.post('accounts/login',{
+                    username: data.email,
+                    password: data.password
+                })
+                await SecureStore.setItemAsync("token",response.data.token);
+                console.log(response.data.token);
+                
+                dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' });
+            }
+            catch(err)
+            {
+                console.log(err);
+            }
+            
           },
-          signOut: () =>{
+          signOut: async () =>{
               console.log("SignOut");
+              await SecureStore.deleteItemAsync("token");
               dispatch({ type: 'SIGN_OUT' })
             },
 
         }),
         []
     );
+    React.useEffect(() => {
+        // Fetch the token from storage then navigate to our appropriate place
+        const localtoken = async () => {
+            let userToken=null;
+    
+          try {
+            userToken = await SecureStore.getItemAsync("token");
+          } catch (e) {
+            // Restoring token failed
+          }
+    
+          // After restoring token, we may need to validate it in production apps
+    
+          // This will switch to the App screen or Auth screen and this loading
+          // screen will be unmounted and thrown away.
+          if(userToken){
+            dispatch({ type: 'RESTORE_TOKEN', token: userToken });
+          }
+        };
+    
+        localtoken();
+      }, []);
 
     return {auth, state};
 }
