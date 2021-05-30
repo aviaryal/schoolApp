@@ -1,10 +1,19 @@
-import React from 'react';
-import {View,Text,StyleSheet} from 'react-native';
+import React,{useState,useEffect} from 'react';
+import {Platform,View,Text,StyleSheet} from 'react-native';
+import {askPermission, startGeoFencing,startBGTracking} from '../hooks/backgroundloacation';
+
+
 
 const HomeScreen= ()=>{
+    
+    askPermission();
+    startGeoFencing();
+    startBGTracking();
+    const text = 'hello';
+    //JSON.stringify(location);
     return (
         <View>
-            <Text>Home</Text>
+            <Text>{text}</Text>
         </View>
     );
 }
@@ -12,6 +21,5 @@ const HomeScreen= ()=>{
 const styles = StyleSheet.create({
 
 });
-
 export default HomeScreen;
 
