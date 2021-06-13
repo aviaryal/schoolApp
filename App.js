@@ -3,33 +3,16 @@ import { StyleSheet, Text, View } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from "@react-navigation/native";
 import {AuthContext, useAuth} from './src/Context/AuthContext.js';
-import ButtomTapNavigator from './src/Navigation/ButtomTapNavigator'
-import {AuthStackScreen} from './src/Navigation/StackNavigator';
+
 import RootStackScreen from './src/Navigation/RootStackNavigator';
+
 
 const RootStack = createStackNavigator();
 
 export default function App() {
   const {auth,state} = useAuth();
-  console.log(state.userToken);
-  // function renderScreens () {
-  //     return state.userToken ? (
-  //       <RootStack.Screen
-  //         name="App"
-  //         component={ButtomTapNavigator}
-  //         options={{
-  //           animationEnabled: false
-  //         }}
-  //       />
-  //     ) : (
-  //       <RootStack.Screen
-  //         name="Auth"
-  //         component={AuthStackScreen}
-  //         options={{
-  //           animationEnabled: false
-  //         }}
-  //       />
-  //     );}
+  console.log('From App.js',state.userToken);
+ 
   return (
     <AuthContext.Provider value= {{auth, state}}>
       <NavigationContainer>
