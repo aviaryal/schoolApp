@@ -1,17 +1,12 @@
-import React,{useEffect,useState} from 'react';
+import React,{useEffect,useState,useContext} from 'react';
 import {Platform} from 'react-native';
 import * as Location from 'expo-location';
 //import * as TaskManager from 'expo-task-manager';
 import schoolApi from '../api/schoolapi';
 import * as geolib from 'geolib';
 
-const Location49 ={
-  latitude: 32.72591122923342,
-  longitude: -97.11232723757111
-}
 export const askPermission= ()=>{
   const [errorMsg, setErrorMsg] = useState(null);
-
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -19,64 +14,85 @@ export const askPermission= ()=>{
         setErrorMsg('Permission to access location was denied');
         return;
       }
-      // let {bgstatus} = await Location.requestBackgroundPermissionsAsync();
-      // if (bgstatus !== 'granted') {
-      //   setErrorMsg('Permission to access location was denied');
-      //   return;
-      // }
     })();
   }, []);
 };
 
-export const checkPostion= async ()=>{
+export const checkPostion= async (schoolLocation)=>{
   let location = null;
   try{
     location = await Location.getCurrentPositionAsync({
       accuracy:Location.Accuracy.BestForNavigation
     });
     console.log(location);
-    return getDistance(location);
+    return getDistance(location,schoolLocation);
   }
   catch(err)
   {
     console.log(err)
   }
 };
-const getDistance = (location)=>{
-  return geolib.getDistance({latitude:location.coords.latitude,longitude:location.coords.longitude},
-    {latitude:Location49.latitude,longitude:Location49.longitude});
+const getDistance = (location,schoolLocation)=>{
+  console.log('From getDistance',schoolLocation);
+  try{
+    return geolib.getDistance({latitude:location.coords.latitude,longitude:location.coords.longitude},
+      {latitude:schoolLocation.latitude,longitude:schoolLocation.longitude});
+  }
+  catch(err)
+  {
+    console.log(err);
+  }
+  
 }
 
-export const startTracking= async (isEnabled,setIsEnabled)=>{
+export const startTracking= async (props)=>{
   
   try{
-    const value = await Location.watchPositionAsync({
+      const value = await Location.watchPositionAsync({
       accuracy:Location.Accuracy.Balanced
     },async (location)=>{
-      if(getDistance(location)>1000){
-        setIsEnabled(false);
+      //console.log(props)
+      if(getDistance(location,props.schoolLocation)>1000){
+        props.setIsEnabled(false);
       }
       else
       {
-        console.log(location.coords.latitude);
+        //console.log(location.coords.latitude);
         let response= null;
+        console.log(Date(location.timestamp));
         try{
-          response = await schoolApi.post('locations/current',{
-            timestamp : location.timestamp,
+          response = await schoolApi.post('school/updateParentsLocation',{
+            
             latitude : location.coords.latitude,
-            longitude : location.coords.longitude
+            longitude : location.coords.longitude,
+            timeStamp : location.timestamp,
           })
+          
+          //console.log(response)
         }
         catch(e)
         {
+          props.setIsEnabled(false)
+          props.setErr('Error')
           console.log(e);
         }
         
       }
-    })
+      
+    }).then((locationWatcher) => {
+      props.setWatcher(locationWatcher);})
   }
   catch(err)
   {
+
+  }
+}
+
+export const stopTracking =  (watcher)=>{
+  try{
+    watcher.remove();
+  }
+  catch(e){
 
   }
 }
