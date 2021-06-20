@@ -1,30 +1,52 @@
-import React,{useState,useEffect} from 'react';
+import React,{useState,useEffect,useContext} from 'react';
 import {Platform,View,Text,StyleSheet, TouchableOpacity, Switch} from 'react-native';
 import { useAuth } from '../Context/AuthContext';
-import {checkPostion,askPermission, startTracking} from '../hooks/useLocation';
-
-
+import {checkPostion,askPermission, startTracking,stopTracking} from '../hooks/useLocation';
+import {Context as schoolDetailsContext} from '../Context/schoolDetailContext';
+import {Context as userInfoContext} from '../Context/CurrentUserContext';
 
 const PHomeScreen= ()=>{
     const [isEnabled, setIsEnabled] = useState(false);
-    const [lol,setLol]= useState(null);
-    useEffect(()=>{
-        (async()=>{
-            askPermission();
-        })
+    const [watcher,setWatcher] = useState(null);
+    const {state: schoolDetails} = useContext(schoolDetailsContext);
+    const {state: userInfo} = useContext(userInfoContext)
+    const [err,setErr] = useState(null);
+    console.log('PHomeScreen',schoolDetails);
+    
+    // useEffect(()=>{
+    //     (async()=>{
+    //         askPermission();
+    //     })
+    //     ();
+    // }
+    // ,[]);
+    askPermission();
+    const props = {
+        setWatcher,
+        setErr,
+        setIsEnabled,
+        schoolLocation:schoolDetails[0],
     }
-    ,[]);
-    //askPermission();
-    //const toggleSwitch = () => setIsEnabled(previousState => !previousState);
-  
+    console.log(props);
+
     const toggleSwitch =  async ()=>{
-        let distance = await checkPostion();
-        if(distance!=null && distance<=1000 || isEnabled){
+          
+       
+        if(isEnabled)
+        {
+            setIsEnabled(previousState => !previousState)
+            stopTracking();
+            return;
+        }
+        let distance = await checkPostion(props.schoolLocation);
+        if(distance!=null && distance<=1000){
             setIsEnabled(previousState => !previousState)
             console.log(distance);
-            startTracking(isEnabled,setIsEnabled);
+            //startTracking(isEnabled,setIsEnabled,schoolDetails[0],user_id);
+            startTracking(props);
             
         }
+        
     }
     const text1 = "I'm here";
     return (
@@ -38,6 +60,7 @@ const PHomeScreen= ()=>{
                 onValueChange={toggleSwitch}
                 value={isEnabled}
             />
+            
         </View>
     );
 }

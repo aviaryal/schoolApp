@@ -3,34 +3,28 @@ import schoolApi from '../api/schoolapi';
 import * as SecureStore from 'expo-secure-store';
 
 export const AuthContext = React.createContext();
-
 export function useAuth(){
     const [state, dispatch] = React.useReducer(
         (prevState, action) => {
         switch (action.type) {
             case 'RESTORE_TOKEN':
-              console.log('From Restore isStaff useReduce',action.response.is_staff);
             return {
                 ...prevState,
-                userToken: action.response.token,
+                userToken: action.token,
                 isLoading: false,
-                isStaff:action.response.is_staff,
-                
             };
             case 'SIGN_IN':
             return {
                 ...prevState,
                 isSignout: false,
                 //userToken: action.token,
-                userToken: action.response.token,
-                isStaff: action.response.is_staff,
+                userToken: action.token,
             };
             case 'SIGN_OUT':
             return {
                 ...prevState,
                 isSignout: true,
                 userToken: null,
-                isStaff:null,
             };
         }
         },
@@ -38,7 +32,7 @@ export function useAuth(){
         isLoading: true,
         isSignout: false,
         userToken: null,
-        isStaff:null,
+       
         }
     );
 
@@ -56,11 +50,7 @@ export function useAuth(){
                     password: data.password
                 })
                 await SecureStore.setItemAsync("token",response.data.token);
-                await SecureStore.setItemAsync("is_staff", response.data.is_staff?"true":"false");
-                console.log("Authcontext SignIn", response.data.token);
-                //dispatch({ type: 'SIGN_IN', token:response.data.token });
-                dispatch({ type: 'SIGN_IN', response:response.data});
-
+                dispatch({ type: 'SIGN_IN', token:response.data.token});
             }
             catch(err)
             {
@@ -70,7 +60,6 @@ export function useAuth(){
           },
           signOut: async () =>{
               await SecureStore.deleteItemAsync("token");
-              await SecureStore.deleteItemAsync('is_staff');
               dispatch({ type: 'SIGN_OUT' })
             },
 
@@ -81,12 +70,9 @@ export function useAuth(){
         // Fetch the token from storage then navigate to our appropriate place
         const localtoken = async () => {
             let userToken=null;
-            let is_staff = null;
           try {
             userToken = await SecureStore.getItemAsync("token");
-            is_staff = await SecureStore.getItemAsync("is_staff");
-            console.log('AuthContext Restore token ',userToken );
-            console.log("AuthContext Restore isStaff", is_staff);
+            
           } catch (e) {
             // Restoring token failed
           }
@@ -94,12 +80,8 @@ export function useAuth(){
           // After restoring token, we may need to validate it in production apps
           // This will switch to the App screen or Auth screen and this loading
           // screen will be unmounted and thrown away.
-          if(userToken!=null && is_staff!=null){
-            
-            dispatch({ type: 'RESTORE_TOKEN', response:{
-              token:userToken,
-              is_staff: is_staff=="true"? true:false,
-            } });
+          if(userToken){
+            dispatch({ type: 'RESTORE_TOKEN', token:userToken});
           }
         };
     
