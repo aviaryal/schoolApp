@@ -13,7 +13,6 @@ const schoolDetailsReducer = (state, action) => {
   const getSchoolDetails = dispatch => async ()=>{
     try{
       const response = await schoolApi.get('school/school_details/');
-      //console.log('From schoolDeaitl.js ', response.data);
       dispatch({type:'get_details', payload:response.data});
     }
     catch(err)

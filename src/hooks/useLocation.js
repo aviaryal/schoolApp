@@ -33,7 +33,7 @@ export const checkPostion= async (schoolLocation)=>{
   }
 };
 const getDistance = (location,schoolLocation)=>{
-  console.log('From getDistance',schoolLocation);
+  //console.log('From getDistance',schoolLocation);
   try{
     return geolib.getDistance({latitude:location.coords.latitude,longitude:location.coords.longitude},
       {latitude:schoolLocation.latitude,longitude:schoolLocation.longitude});

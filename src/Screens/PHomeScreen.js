@@ -11,7 +11,7 @@ const PHomeScreen= ()=>{
     const {state: schoolDetails} = useContext(schoolDetailsContext);
     const {state: userInfo} = useContext(userInfoContext)
     const [err,setErr] = useState(null);
-    console.log('PHomeScreen',schoolDetails);
+    //console.log('PHomeScreen',schoolDetails);
     
     // useEffect(()=>{
     //     (async()=>{
@@ -27,7 +27,7 @@ const PHomeScreen= ()=>{
         setIsEnabled,
         schoolLocation:schoolDetails[0],
     }
-    console.log(props);
+    //console.log(props);
 
     const toggleSwitch =  async ()=>{
           

@@ -10,7 +10,8 @@ export function useAuth(){
             case 'RESTORE_TOKEN':
             return {
                 ...prevState,
-                userToken: action.token,
+                userToken: action.data.token,
+                is_staff: action.data.is_staff,
                 isLoading: false,
             };
             case 'SIGN_IN':
@@ -18,13 +19,16 @@ export function useAuth(){
                 ...prevState,
                 isSignout: false,
                 //userToken: action.token,
-                userToken: action.token,
+                userToken: action.data.token,
+                is_staff: action.data.is_staff
+                
             };
             case 'SIGN_OUT':
             return {
                 ...prevState,
                 isSignout: true,
                 userToken: null,
+                is_staff: false,
             };
         }
         },
@@ -32,7 +36,7 @@ export function useAuth(){
         isLoading: true,
         isSignout: false,
         userToken: null,
-       
+        is_staff: false,
         }
     );
 
@@ -50,7 +54,10 @@ export function useAuth(){
                     password: data.password
                 })
                 await SecureStore.setItemAsync("token",response.data.token);
-                dispatch({ type: 'SIGN_IN', token:response.data.token});
+                await SecureStore.setItemAsync("is_staff", response.data.is_staff?
+                  "true": "false" 
+                );
+                dispatch({ type: 'SIGN_IN', data:response.data});
             }
             catch(err)
             {
@@ -70,18 +77,26 @@ export function useAuth(){
         // Fetch the token from storage then navigate to our appropriate place
         const localtoken = async () => {
             let userToken=null;
+            let isStaff = null;
           try {
             userToken = await SecureStore.getItemAsync("token");
-            
+            isStaff = await SecureStore.getItemAsync("is_staff");
           } catch (e) {
-            // Restoring token failed
+              // Restoring token failed
+              await SecureStore.deleteItemAsync("token");
+              dispatch({ type: 'SIGN_OUT' })
           }
     
           // After restoring token, we may need to validate it in production apps
           // This will switch to the App screen or Auth screen and this loading
           // screen will be unmounted and thrown away.
-          if(userToken){
-            dispatch({ type: 'RESTORE_TOKEN', token:userToken});
+          if(userToken && isStaff){
+            const data= {
+              token : userToken,
+              is_staff: isStaff=="true"? true:false,
+            }
+            // console.log(data)
+            dispatch({ type: 'RESTORE_TOKEN', data});
           }
         };
     

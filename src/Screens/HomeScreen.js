@@ -10,17 +10,18 @@ import {Context as schoolDetailsContext} from '../Context/schoolDetailContext';
 
 const HomeScreen= ()=>{
     const {state} = useAuth();
-    const {fetch_info}= useContext(currentUserContext);
+    const {state: userInfo, fetch_info}= useContext(currentUserContext);
     const {getSchoolDetails} = useContext(schoolDetailsContext);
     useEffect(()=>{
         fetch_info();
         getSchoolDetails();
         
     },[])
+    // console.log('HomeScreen', userInfo);
     return (
         <View >
             {
-                state.isStaff?
+                state.is_staff?
                 <SHomeScreen/>
                 :
                 <PHomeScreen/>
