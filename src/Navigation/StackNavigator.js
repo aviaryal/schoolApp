@@ -4,13 +4,18 @@ import HomeScreen from '../Screens/HomeScreen';
 import ProfileScreen from '../Screens/ProfileScreen';
 import NotificationScreen from '../Screens/NotificationScreen';
 import SignInScreen from '../Screens/SignInScreen';
-
+import StudentPickupScreen from '../Screens/StudentPickupScreen';
+import PHomeScreen from '../Screens/PHomeScreen';
+import SHomeScreen from '../Screens/SHomeScreen';
 const HomeStack = createStackNavigator();
 
 const HomeStackScreen = ()=>{
     return (
         <HomeStack.Navigator>
             <HomeStack.Screen name ="Home" component={HomeScreen} />
+            <HomeStack.Screen name = "StudentPickup" component ={StudentPickupScreen}/>
+            {/* <PHomeScreen.Screen name = "PHomeScreen" component = {PHomeScreen}/>
+            <SHomeScreen.Screen name = "SHomeScreen" component = {SHomeScreen}/> */}
         </HomeStack.Navigator>
     );
 };
