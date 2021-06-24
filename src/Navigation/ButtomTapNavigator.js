@@ -18,7 +18,7 @@ const ButtomTapNavigator= ()=>{
             }}
             
         />
-        <ButtomTab.Screen
+        {/* <ButtomTab.Screen
             name = "Notification" 
             component={NotificationStackScreen}
             options={{
@@ -27,7 +27,7 @@ const ButtomTapNavigator= ()=>{
                     <MaterialCommunityIcons name="bell" color={color} size={size} />
                 }
             }}
-        />
+        /> */}
         <ButtomTab.Screen 
             name = "Profile" 
             component= {ProfileStackScreen}
