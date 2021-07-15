@@ -1,33 +1,91 @@
 import React,{useState,useEffect} from 'react';
-import {View,Text,StyleSheet, TouchableOpacity, FlatList} from 'react-native';
+import {CheckBox,View,Text,StyleSheet, TouchableOpacity, FlatList, Button, SafeAreaView, Switch, Alert} from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import schoolApi from '../api/schoolapi';
+import { useNavigation } from '@react-navigation/native';
+const submitSeletedStudents = async  (parents, children,navigation)=>{
 
-const renderChildren = ({item}) =>{
-    return <View>
-        {console.log(item)}
-        <Text>Student: {item.first_name} {item.last_name}</Text>
-        <Text>Grade:{item.grade}</Text>
-
-    </View>
-}
+      const datas = children.filter((item) => item.isSelected).map((item)=>item.id);
+      try
+      {
+        const response = await schoolApi.post('school/updatePickUpDropOff',{
+          parent: parents.user,
+          ids: datas,
+        })
+        //navigation.navigate("Home");
+        navigation.goBack();
+      }
+      catch(err)
+      {
+        console.log(err);
+        Alert.alert("Error", err.message);
+      } 
+ 
+};
 const StudentPickupScreen= ({item})=>{
+    const navigation = useNavigation();
     const route = useRoute();
-    const [child, setChild] = useState(route.params.item)
+    const [parents, setParents] = useState(route.params.item);
+    const [children, setChildren] = useState(()=>{
+        let newArray = [...parents.children];
+        newArray.forEach((element)=>{
+            element.isSelected = false
+        })
+        return newArray;
+    });
+    const onUpdateValue = (index, value) => { children[index].isSelected = value; return setChildren([...children]);}
+    const renderItem = ({ item, index }) => {return (<ItemRenderer key={index} index={index} item={item} onUpdateValue={onUpdateValue} />)};
     return (
-        <View>
-            <Text> Parents/Gurdain:  {child.first_name} {child.last_name} </Text>
-            <FlatList 
-                data = {child.children}
-                keyExtractor = {item => ''+item.id} 
-                renderItem = {renderChildren}/>
-        </View>
+      <SafeAreaView style={styles.container}>
+            <View style={{ flex: 1 }}>
+              
+                  <FlatList
+                    data={children}
+                    renderItem={renderItem}
+                    keyExtractor={(item)=>{return ''+item.id}}
+                  />
+                <TouchableOpacity style={styles.button}
+                    onPress={()=>{submitSeletedStudents(parents, children,navigation);}}
+                >
+                    <Text> Submit</Text>
+                </TouchableOpacity>
+            </View>
+         
+      </SafeAreaView>
     );
-}
-
-const styles = StyleSheet.create({
-
-});
-
+  }
+  
+  const ItemRenderer = ({ index, item, onUpdateValue }) => {
+  return (<View style={styles.item}>
+    <Text>Student: {item.first_name} {item.last_name}</Text>
+    <Text>Grade:{item.grade}</Text>
+    <Switch value={item.isSelected} onValueChange={(value) => onUpdateValue(index, value)} />
+  </View>)};
+  
+  const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+    },
+    item: {
+        flexDirection:"row",
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: 12,
+        borderBottomWidth: 1,
+        borderBottomColor: '#CCCCCC55'
+    },
+    tabHeading: {
+        padding: 20,
+        flexDirection: 'row',
+    },
+    title: {
+        textTransform: 'capitalize',
+        color: '#000'
+    },
+    button: {
+        alignItems: "center",
+        backgroundColor: "#DDDDDD",
+        padding: 10
+    },
+  });
 export default StudentPickupScreen;
-
