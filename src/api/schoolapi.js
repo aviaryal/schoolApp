@@ -3,7 +3,8 @@ import * as SecureStore from 'expo-secure-store';
 
 
 const instance = axios.create({
-    baseURL:"http://schoolpickup.herokuapp.com/api",
+    baseURL:"https://schoolpickup.herokuapp.com/api",
+    //baseURL:"http://3e762ad53826.ngrok.io/api",
 });
 
 instance.interceptors.request.use(

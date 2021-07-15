@@ -3,7 +3,7 @@ import { FlatList, SafeAreaView, StatusBar, StyleSheet, Text, TouchableOpacity, 
 import { useNavigation } from '@react-navigation/native';
 const renderChildren = ({item}) =>{
     return <View>
-        {console.log(item)}
+       
         <Text>Student: {item.first_name} {item.last_name}</Text>
         <Text>Grade:{item.grade}</Text>
 
@@ -11,7 +11,6 @@ const renderChildren = ({item}) =>{
 }
 const Item = ({ item }) => {
     const navigation = useNavigation();
-    console.log(navigation);
     return (
     <TouchableOpacity style={styles.Touch}
         onPress = {()=>{

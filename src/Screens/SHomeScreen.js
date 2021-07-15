@@ -3,12 +3,13 @@ import {FlatList,SafeAreaView,Platform,View,Text,StyleSheet, TouchableOpacity, S
 import schoolApi from '../api/schoolapi';
 import Item from '../Components/Item';
 import { useAuth } from '../Context/AuthContext';
-
+import { useIsFocused } from "@react-navigation/native";
 
 const SHomeScreen= ()=>{
     const infotext = 'Hello, I am staff';
     const [nearbyParents, setNearbyParents] = useState(null);
     const {auth,state:useAuthState} = useAuth();
+    const isFocused = useIsFocused();
     const getNearbyParents = async ()=>
         {
             try
@@ -30,16 +31,18 @@ const SHomeScreen= ()=>{
                 console.log(err.message);
             }
         }
-    
     useEffect(()=>{
+        if(isFocused){
+            getNearbyParents();
+        }
         getNearbyParents();
         const interval=setInterval(()=>{
             getNearbyParents();
-           },100000)
+           },10000)
              
              
            return()=>clearInterval(interval)
-    },[])
+    },[isFocused])
     //console.log("SHomeScreen NearByParents State",nearbyParents);
     const renderItem = ({item})=>{
         return (
