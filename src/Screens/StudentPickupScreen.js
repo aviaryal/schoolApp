@@ -9,7 +9,8 @@ const submitSeletedStudents = async  (parents, children,navigation)=>{
       try
       {
         const response = await schoolApi.post('school/updatePickUpDropOff',{
-          parent: parents.user,
+          parent: parents.id,
+          spot: parents.spot.id,
           ids: datas,
         })
         //navigation.navigate("Home");
