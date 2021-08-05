@@ -20,7 +20,7 @@ const ProfileScreen= ()=>{
             setProfile(response.data);
         })();
      },[]); 
-    console.log(profile);
+    //console.log(profile);
 //     return (
     return (
         <View style={styles.container}>

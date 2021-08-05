@@ -12,7 +12,7 @@ const infoReducer = (state, action) => {
   
   const fetch_info = dispatch => async () => {
     const response = await schoolApi.get('accounts/current_user');
-    console.log("FetchInfo ", response.data);
+    // console.log("FetchInfo ", response.data);
     dispatch({ type: 'fetch_info', payload: response.data });
   };
   

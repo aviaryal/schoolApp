@@ -49,25 +49,35 @@ export const startTracking= async (props)=>{
   
   try{
       const value = await Location.watchPositionAsync({
-      accuracy:Location.Accuracy.Balanced
+      accuracy:Location.Accuracy.High
     },async (location)=>{
       //console.log(props)
-      if(getDistance(location,props.schoolLocation)>1000){
+      let distance = getDistance(location,props.schoolLocation)
+     
+
+      
+      if(distance>1000){
         props.setIsEnabled(false);
       }
       else
       {
-        //console.log(location.coords.latitude);
+        // console.log("From useLocation Hook",location.coords);
         let response= null;
-        console.log(Date(location.timestamp));
-        try{
-          response = await schoolApi.post('school/updateParentsLocation',{
+        if(distance<300){
+            props.setIsNear(true);
             
+        }
+
+        try{
+          response = await schoolApi.post('school/updateguardainLocation',{
             latitude : location.coords.latitude,
             longitude : location.coords.longitude,
-            timeStamp : location.timestamp,
           })
-          
+
+          if(response.data.picked == "true"){
+            props.setIsEnabled(false); 
+            props.watcher.remove();
+          }
           //console.log(response)
         }
         catch(e)
