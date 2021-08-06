@@ -3,7 +3,7 @@ import {View,Text,StyleSheet, TouchableOpacity, Image} from 'react-native';
 import {AuthContext} from '../Context/AuthContext.js';
 import schoolApi from '../api/schoolapi';
 import {Context as userInfoContext} from '../Context/CurrentUserContext';
-import { watchPositionAsync } from 'expo-location';
+
 
 const ProfileScreen= ()=>{
      const {auth, state} = React.useContext(AuthContext);
@@ -15,7 +15,7 @@ const ProfileScreen= ()=>{
 
     useEffect(()=> {
         (async() =>{
-            const response = await schoolApi.get('school/guardian/'+userInfo.user_id+'/');
+            const response = await schoolApi.get('school/getuserInformation');
             //console.log(response.data);
             setProfile(response.data);
         })();
