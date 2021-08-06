@@ -2,8 +2,8 @@ import React, { useState, useEffect, useContext, Component } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { AuthContext } from '../Context/AuthContext.js';
 import schoolApi from '../api/schoolapi';
-import { Context as userInfoContext } from '../Context/CurrentUserContext';
-import { watchPositionAsync } from 'expo-location';
+import {Context as userInfoContext} from '../Context/CurrentUserContext';
+
 
 const ProfileScreen = () => {
     const { auth, state } = React.useContext(AuthContext);
@@ -13,15 +13,15 @@ const ProfileScreen = () => {
     const [profile, setProfile] = useState([]);
     //console.log(userInfo);
 
-    useEffect(() => {
-        (async () => {
-            const response = await schoolApi.get('school/guardian/' + userInfo.user_id + '/');
+    useEffect(()=> {
+        (async() =>{
+            const response = await schoolApi.get('school/getuserInformation');
             //console.log(response.data);
             setProfile(response.data);
         })();
-    }, []);
-    console.log(profile);
-    //     return (
+     },[]); 
+    //console.log(profile);
+//     return (
     return (
         <View style={styles.container}>
             <View style={styles.header}>

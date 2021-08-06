@@ -24,7 +24,7 @@ export const checkPostion= async (schoolLocation)=>{
     location = await Location.getCurrentPositionAsync({
       accuracy:Location.Accuracy.BestForNavigation
     });
-    console.log(location);
+    // console.log(location);
     return getDistance(location,schoolLocation);
   }
   catch(err)
@@ -49,38 +49,42 @@ export const startTracking= async (props)=>{
   
   try{
       const value = await Location.watchPositionAsync({
-      accuracy:Location.Accuracy.Balanced
-    },async (location)=>{
-      //console.log(props)
-      if(getDistance(location,props.schoolLocation)>1000){
-        props.setIsEnabled(false);
-      }
-      else
-      {
-        //console.log(location.coords.latitude);
-        let response= null;
-        console.log(Date(location.timestamp));
-        try{
-          response = await schoolApi.post('school/updateParentsLocation',{
+          accuracy:Location.Accuracy.High
+        },async (location)=>{
+     
+          let distance = getDistance(location,props.schoolLocation);
+          console.log("UseLocation, distance",distance);
+          if(distance < 300){
+            props.setIsNear(true);
             
-            latitude : location.coords.latitude,
-            longitude : location.coords.longitude,
-            timeStamp : location.timestamp,
-          })
+        }
+          if(distance>1000){
+            // props.setIsEnabled(false);
+          }
+          else
+          {
+          let response= null;
           
+            try{
+              response = await schoolApi.post('school/updateguardainLocation',{
+                latitude : location.coords.latitude,
+                longitude : location.coords.longitude,
+              })
+              if(response.data.picked == "true"){
+                props.setIsEnabled(false); 
+                props.watcher.remove();
+              }
           //console.log(response)
-        }
-        catch(e)
-        {
-          props.setIsEnabled(false)
-          props.setErr('Error')
-          console.log(e);
-        }
-        
+          }
+          catch(e)
+          {
+            props.setIsEnabled(false)
+            props.setErr('Error')
+            console.log(e);
+          } 
       }
-      
-    }).then((locationWatcher) => {
-      props.setWatcher(locationWatcher);})
+    })
+    props.setWatcher(value);
   }
   catch(err)
   {
