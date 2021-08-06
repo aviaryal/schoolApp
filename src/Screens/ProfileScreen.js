@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, Component } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, Dimensions } from 'react-native';
 import { AuthContext } from '../Context/AuthContext.js';
 import schoolApi from '../api/schoolapi';
 import {Context as userInfoContext} from '../Context/CurrentUserContext';
@@ -25,10 +25,9 @@ const ProfileScreen = () => {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Text style={styles.screen} > School Pickup </Text>
+                <Image style={styles.image} source={require('./logo.png')} />
+                <Text style={styles.screen} > Your Profile </Text>
             </View>
-            <Image style={styles.avatar} source={{ uri: 'https://bootdey.com/img/Content/avatar/avatar6.png' }} />
-
             <View style={styles.body}>
 
 
@@ -60,6 +59,11 @@ const styles = StyleSheet.create({
         backgroundColor: "#fa5b3d",
         height: 200,
     },
+    image: {
+        marginBottom: 20,
+        width: Dimensions.get('window').width,
+        height: 200
+      },
     avatar: {
         width: 130,
         height: 130,
@@ -75,7 +79,6 @@ const styles = StyleSheet.create({
         fontSize: 28,
         fontWeight: 'bold',
         alignSelf: 'center',
-        color: 'white'
     },
     name: {
         fontSize: 22,
