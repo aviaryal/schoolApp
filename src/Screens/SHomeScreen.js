@@ -25,15 +25,13 @@ const SHomeScreen= ()=>{
                     }
                 });
                 //console.log("SHomeScreen After Making call",response.data)
-                setNearbyParents(response.data);
-
-                
+                setNearbyParents(response.data);     
             }
             catch(err)
             {
                 console.log(err.message);
             }
-        }
+        };
     useEffect(()=>{
         if(isFocused){
             getNearbyParents();
@@ -41,7 +39,7 @@ const SHomeScreen= ()=>{
         getNearbyParents();
         const interval=setInterval(()=>{
             getNearbyParents();
-           },10000)
+           },5000)
              
              
            return()=>clearInterval(interval)

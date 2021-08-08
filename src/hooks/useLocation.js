@@ -18,73 +18,74 @@ export const askPermission= ()=>{
   }, []);
 };
 
-export const checkPostion= async (schoolLocation)=>{
-  let location = null;
-  try{
-    location = await Location.getCurrentPositionAsync({
-      accuracy:Location.Accuracy.BestForNavigation
-    });
-    // console.log(location);
-    return getDistance(location,schoolLocation);
-  }
-  catch(err)
-  {
-    console.log(err)
-  }
-};
-const getDistance = (location,schoolLocation)=>{
-  //console.log('From getDistance',schoolLocation);
-  try{
-    return geolib.getDistance({latitude:location.coords.latitude,longitude:location.coords.longitude},
-      {latitude:schoolLocation.latitude,longitude:schoolLocation.longitude});
-  }
-  catch(err)
-  {
-    console.log(err);
-  }
+// export const checkPostion= async (schoolLocation)=>{
+//   let location = null;
+//   try{
+//     location = await Location.getCurrentPositionAsync({
+//       accuracy:Location.Accuracy.BestForNavigation
+//     });
+//     // console.log(location);
+//     return getDistance(location,schoolLocation);
+//   }
+//   catch(err)
+//   {
+//     console.log(err)
+//   }
+// };
+// const getDistance = (location,schoolLocation)=>{
+//   //console.log('From getDistance',schoolLocation);
+//   try{
+//     return geolib.getDistance({latitude:location.coords.latitude,longitude:location.coords.longitude},
+//       {latitude:schoolLocation.latitude,longitude:schoolLocation.longitude});
+//   }
+//   catch(err)
+//   {
+//     console.log(err);
+//   }
   
-}
+// }
 
 export const startTracking= async (props)=>{
-  
   try{
-      const value = await Location.watchPositionAsync({
-          accuracy:Location.Accuracy.High
+    let picked= 'false';
+    let distance = 10000;
+    const value = await Location.watchPositionAsync({
+          accuracy:Location.Accuracy.BestForNavigation
         },async (location)=>{
-     
-          let distance = getDistance(location,props.schoolLocation);
-          console.log("UseLocation, distance",distance);
-          if(distance < 300){
-            props.setIsNear(true);
-            
-        }
-          if(distance>1000){
-            // props.setIsEnabled(false);
-          }
-          else
-          {
-          let response= null;
-          
             try{
-              response = await schoolApi.post('school/updateguardainLocation',{
+                response = await schoolApi.post('school/updateguardainLocation',{
                 latitude : location.coords.latitude,
                 longitude : location.coords.longitude,
               })
+             
+              distance = response.data.distance;
+              picked = response.data.picked;
+              console.log('useLocation.js Distance',distance);
               if(response.data.picked == "true"){
-                props.setIsEnabled(false); 
-                props.watcher.remove();
+                props.setIsEnabled(false);
+                props.setIsNear(false);
               }
-          //console.log(response)
+              if(distance>3000){
+                props.setIsEnabled(false);
+              }
+              if(distance < 500){
+                props.setIsNear(true);
+              }
+              else{
+                props.setIsNear(false);
+                props.setErr("You need to be withIn a radius of 3km to use the services");
+              }
           }
           catch(e)
           {
-            props.setIsEnabled(false)
-            props.setErr('Error')
+            props.setIsEnabled(false);
+            props.setIsNear(false);
+            props.setErr('Error');
             console.log(e);
           } 
-      }
     })
     props.setWatcher(value);
+    
   }
   catch(err)
   {

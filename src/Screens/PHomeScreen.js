@@ -35,32 +35,52 @@ const PHomeScreen= ({navigation})=>{
     const [watcher,setWatcher] = useState(null);
     const {state: schoolDetails} = useContext(schoolDetailsContext);
     const {state: userInfo} = useContext(userInfoContext)
-    const [err,setErr] = useState(null);
+    const [err,setErr] = useState('');
     const [spot,setSpot] = useState(defaultSpot);
     const [isNear, setIsNear] = useState(false);
     const isFocused = useIsFocused();
-    useEffect(()=>{
-        if(isNear)
-        {
-            (async()=>{
-                try {
-                    const response = await schoolApi.get('school/getupdatepickupspot');
-                    //setSpot(response.data.spot);
-                    
-                    
-                    if (!isEmpty(response.data.spot))
-                    {
-                        setSpot(response.data.spot);
-                    }
-                
-                    // console.log("PHomeScreen UseEffect",response.data);
-                }
-                catch(err){
-                    console.log(err);
-                }
-            })
-            ();
+
+    const getSpotNO = async ()=>
+    {
+        try {
+            const response = await schoolApi.get('school/getupdatepickupspot');
+            if (!isEmpty(response.data.spot))
+            {
+                setSpot(response.data.spot);
+            }
+            else{
+                setIsNear(false);
+                setSpot(defaultSpot);
+            }
         }
+        catch(err){
+            console.log(err);
+        }
+    };
+
+    useEffect(()=>{
+        if(isEnabled === false){
+            try{
+                stopTracking(watcher);
+            }
+            catch(err){
+                console.log(err);
+            }
+        }
+    }, [isEnabled])
+
+    // Make Api Call every 5 seconds to get Spot when compoment is focused or is Near is true
+    useEffect(()=>{
+        if(isFocused){
+            getSpotNO();
+        }
+        getSpotNO();
+        const interval=setInterval(()=>{
+            if(isNear){
+                getSpotNO();
+            }
+           },5000);
+        return()=>clearInterval(interval)
     }
     ,[isNear,isFocused]);
     askPermission();
@@ -70,33 +90,33 @@ const PHomeScreen= ({navigation})=>{
         setErr,
         setIsEnabled,
         setIsNear,
-        isNear,
-        watcher,
-        schoolLocation:schoolDetails[0],
     }
     //console.log(props);
 
     const toggleSwitch =  async ()=>{
         if(isEnabled)
         {
-            setIsEnabled(previousState => !previousState)
+            setIsEnabled(false);
             setIsNear(false);
             setSpot(defaultSpot);
-            stopTracking(watcher);
-            return;
         }
-        let distance = await checkPostion(props.schoolLocation);
-        console.log("PHomeScreen.js, ",distance);
-        if(distance!=null /*&& distance<=1000*/){
-            setIsEnabled(previousState => !previousState)
+        else{
+            setIsEnabled(true);
             startTracking(props);
         }
+
+        /* Bug with only getting postion so Comment. The above else statement will track objects*/ 
+        // let distance = await checkPostion(props.schoolLocation);
+        // console.log("PHomeScreen  Distance ",distance);
+        // if(distance!=null  /*&& distance<=1000*/){
+        //     setIsEnabled(previousState => !previousState)
+        //     startTracking(props);
+        // }
     }
     
     const text1 = "I'm here";
     return (
-        <View >
-            
+        <View > 
             <Text>{text1}</Text>
             <Switch
                 trackColor={{ false: "#767577", true: "#90ee90" }}
@@ -105,9 +125,8 @@ const PHomeScreen= ({navigation})=>{
                 onValueChange={toggleSwitch}
                 value={isEnabled}
             />
-            
-            <RenderSpot spot ={spot}/>
-            
+            {isNear ? <RenderSpot spot ={spot}/>: <View/>} 
+
         </View>
     );
 }
