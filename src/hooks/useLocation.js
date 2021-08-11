@@ -67,13 +67,17 @@ export const startTracking= async (props)=>{
               }
               if(distance>3000){
                 props.setIsEnabled(false);
+                props.setErr('You need to be within 3km radius to used location tracking services');
+              }
+              else{
+                props.setErr('');
               }
               if(distance < 500){
                 props.setIsNear(true);
+
               }
               else{
                 props.setIsNear(false);
-                props.setErr("You need to be withIn a radius of 3km to use the services");
               }
           }
           catch(e)

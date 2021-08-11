@@ -125,7 +125,9 @@ const PHomeScreen= ({navigation})=>{
                 onValueChange={toggleSwitch}
                 value={isEnabled}
             />
+
             {isNear ? <RenderSpot spot ={spot}/>: <View/>} 
+            <Text>{err}</Text>
 
         </View>
     );
@@ -142,6 +144,13 @@ const styles = StyleSheet.create({
         padding:10,
         fontWeight:"bold",
         fontSize:18,
+        color:"#f00",
+    },
+    errText:{
+        alignContent:"center",
+        padding:10,
+        fontWeight:"bold",
+        fontSize:16,
         color:"#f00",
     }
 });
