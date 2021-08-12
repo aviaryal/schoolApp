@@ -55,7 +55,9 @@ const SHomeScreen= ()=>{
     }
     return (
         <SafeAreaView  >
-            <Text>{infotext} </Text>
+            <View style={styles.banner}>
+                <Text style = {styles.header}>{infotext} </Text>
+            </View>
             <Picker 
                 selectedValue={selectedValue}
                 onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
@@ -93,6 +95,15 @@ const styles = StyleSheet.create({
       pickerstyle:{
         height: 50, width: 150
       
+      },
+      banner: {
+        backgroundColor: "#fa5b3d",
+        height: 40,
+      },
+      header: {
+        fontSize: 22,
+        color: "#FFFFFF",
+        fontWeight: '600',
       }
 });
 export default SHomeScreen;

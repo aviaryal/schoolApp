@@ -6,13 +6,14 @@ import NotificationScreen from '../Screens/NotificationScreen';
 import SignInScreen from '../Screens/SignInScreen';
 import StudentPickupScreen from '../Screens/StudentPickupScreen';
 import ChangeSpotScreen from '../Screens/ChangeSpotScreen';
+import { StyleSheet } from 'react-native';
 
 const HomeStack = createStackNavigator();
 
 const HomeStackScreen = ()=>{
     return (
         <HomeStack.Navigator>
-            <HomeStack.Screen name ="Home" component={HomeScreen} />
+            <HomeStack.Screen name ="Home"  component={HomeScreen} />
             <HomeStack.Screen name = "StudentPickup" component ={StudentPickupScreen}/>
             <HomeStack.Screen name = "ChangeSpot" component ={ChangeSpotScreen}/>
             {/* <PHomeScreen.Screen name = "PHomeScreen" component = {PHomeScreen}/>
@@ -49,5 +50,17 @@ const AuthStackScreen = ()=>{
         </AuthStack.Navigator>
     )
 }
+
+const styles = StyleSheet.create({
+      banner: {
+        backgroundColor: "#fa5b3d",
+        height: 40,
+      },
+      header: {
+        fontSize: 22,
+        color: "#FFFFFF",
+        fontWeight: '600',
+      }
+});
 
 export {HomeStackScreen,ProfileStackScreen,NotificationStackScreen, AuthStackScreen};
