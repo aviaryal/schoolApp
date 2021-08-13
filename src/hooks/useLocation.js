@@ -52,18 +52,20 @@ export const startTracking= async (props)=>{
     const value = await Location.watchPositionAsync({
           accuracy:Location.Accuracy.BestForNavigation
         },async (location)=>{
+            console.log(location);
             try{
                 response = await schoolApi.post('school/updateguardainLocation',{
                 latitude : location.coords.latitude,
                 longitude : location.coords.longitude,
               })
-             
               distance = response.data.distance;
               picked = response.data.picked;
               console.log('useLocation.js Distance',distance);
               if(response.data.picked == "true"){
                 props.setIsEnabled(false);
+                props.setErr("You already pickedup the student.")
                 props.setIsNear(false);
+                return;
               }
               if(distance>3000){
                 props.setIsEnabled(false);
@@ -72,7 +74,7 @@ export const startTracking= async (props)=>{
               else{
                 props.setErr('');
               }
-              if(distance < 500){
+              if(distance < 500 && distance!==0){
                 props.setIsNear(true);
 
               }
@@ -84,7 +86,7 @@ export const startTracking= async (props)=>{
           {
             props.setIsEnabled(false);
             props.setIsNear(false);
-            props.setErr('Error');
+            props.setErr('Internal Server Error');
             console.log(e);
           } 
     })
