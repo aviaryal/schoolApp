@@ -48,7 +48,7 @@ const StudentPickupScreen= ({item})=>{
                 <TouchableOpacity style={styles.button}
                     onPress={()=>{submitSeletedStudents(parents, children,navigation);}}
                 >
-                    <Text> Submit</Text>
+                    <Text style = {styles.textColor}> Submit</Text>
                 </TouchableOpacity>
             </View>
          
@@ -58,14 +58,17 @@ const StudentPickupScreen= ({item})=>{
   
   const ItemRenderer = ({ index, item, onUpdateValue }) => {
   return (<View style={styles.item}>
-    <Text>Student: {item.first_name} {item.last_name}</Text>
-    <Text>Grade:{item.grade}</Text>
+    
+    <Text style = {styles.textStudent}>Student: {item.first_name} {item.last_name}</Text>
+    <Text style = {styles.textStudent}>Grade:{item.grade}</Text>
     <Switch value={item.isSelected} onValueChange={(value) => onUpdateValue(index, value)} />
+    
   </View>)};
   
   const styles = StyleSheet.create({
     container: {
         flex: 1,
+        
     },
     item: {
         flexDirection:"row",
@@ -73,7 +76,10 @@ const StudentPickupScreen= ({item})=>{
         justifyContent: 'space-between',
         padding: 12,
         borderBottomWidth: 1,
-        borderBottomColor: '#CCCCCC55'
+        borderBottomColor: '#CCCCCC55',
+        backgroundColor: "#fa5b3d",
+        borderWidth:2,
+        borderColor: 'rgba(255,255,255,5)'
     },
     tabHeading: {
         padding: 20,
@@ -85,8 +91,16 @@ const StudentPickupScreen= ({item})=>{
     },
     button: {
         alignItems: "center",
-        backgroundColor: "#DDDDDD",
+        backgroundColor: "#fa5b3d",
         padding: 10
     },
+    textColor:{
+      fontSize:20,
+      color:'white'
+    },
+    textStudent:{
+      fontSize:15,
+      color:'white'
+    }
   });
 export default StudentPickupScreen;

@@ -154,6 +154,7 @@ const styles = StyleSheet.create({
         color:"#f00",
     }
 });
+
 export default PHomeScreen;
 
 

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FlatList, SafeAreaView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Dimensions, FlatList, SafeAreaView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 
 function isEmpty(obj) {
@@ -7,15 +7,15 @@ function isEmpty(obj) {
 };
 const RenderSpot = ({spot})=>{
     if(!isEmpty(spot))
-        return <Text style={styles.spotText}>Spot: {spot.pickup_spot.pickup_spot} </Text>
+        return <Text style={styles.spotAllign}>    Spot: {spot.pickup_spot.pickup_spot} </Text>
     else
-        return <Text style={styles.spotText}>Spot: N/A</Text>
+        return <Text style={styles.spotAllign}>    Spot: N/A</Text>
 }
 const renderChildren = ({item}) =>{
     return(
         <View>
-            <Text>Student: {item.first_name} {item.last_name}</Text>
-            <Text>Grade:{item.grade}</Text>
+            <Text style ={styles.textStyle}>Student: {item.first_name} {item.last_name}</Text>
+            <Text style ={styles.textStyle}>Grade:{item.grade}</Text>
         </View>
     );
 }
@@ -26,14 +26,21 @@ const Item = ({ item }) => {
             onPress = {()=>{
                 navigation.navigate('StudentPickup',{item}); // Reference in HomeStackNavigator in StackNavigator.js
             }} >
-            <Text style={styles.parentsText}>Parents: {item.first_name} {item.last_name}</Text>
-            <Text style={styles.distancetext}>Distance: {item.distance}</Text>
-            <RenderSpot spot= {item.spot}/>
-            <FlatList
-                data = {item.children}
-                keyExtractor = {item => ''+item.id} 
-                renderItem = {renderChildren}
-            />
+            <View style = {styles.viewStyle}>
+                <Text style={styles.parentsText}>Parents: {item.first_name} {item.last_name}   </Text>
+                <Text style={styles.distancetext}>Distance: {item.distance.toFixed(2)} meter</Text>
+            </View>
+            <View style = {styles.v}>
+                <View style = {styles.viewStyle}>
+                    <FlatList
+                    data = {item.children}
+                    keyExtractor = {item => ''+item.id} 
+                    renderItem = {renderChildren}
+                    />
+                    <RenderSpot  spot= {item.spot}/>
+                </View>
+            </View>
+            
         </TouchableOpacity>
     );
 };
@@ -42,24 +49,42 @@ const styles = StyleSheet.create({
     Touch:{
         
         //flexDirection: 'row',
-        borderWidth:1,
-        borderColor: 'rgba(200,200,128,1)',
+        borderWidth:2,
+        borderColor: 'rgba(255,255,255,5)',
+        backgroundColor: "#fa5b3d",
     },
     parentsText:{
         marginTop:10,
         fontSize: 20,
         fontWeight: 'bold',
-        color:'#f2f',
+        color:'#ffffff',
     },
     distancetext:{
-        fontSize: 16,
+        marginTop:10,
+        fontSize: 20,
         fontStyle:"italic",
-        color:'#5f2'
+        color:'#00ffff',
+        alignItems:'flex-end'
+       
     },
     spotText:{
         fontSize: 14,
         fontStyle:"italic",
         color:'#51f',
+    },
+    spotAllign:{
+        fontSize: 20,
+        fontWeight: "bold",
+        color:"#fff",
+        alignSelf: 'flex-end'
+    },
+    textStyle:{
+        fontSize:20,
+        color:"#000"
+    },
+    viewStyle:{
+        width: '50%',
+        flexDirection:'row'
     }
 });
 
