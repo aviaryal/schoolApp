@@ -18,11 +18,13 @@ const RenderSpot = (spot) =>{
     if(spot.spot.id !== "none"){
         return (<View>
             <Text style={styles.spotText}>PickUpDrop at: {spot.spot.pickup_spot.pickup_spot}</Text>
-            <Button title="Change_Spot"
-                onPress={()=>{
-                    navigation.navigate('ChangeSpot',{spotID});
-                }}
-            />
+            <View style = {styles.btnView}>
+                <Button title="Change_Spot"
+                    onPress={()=>{
+                        navigation.navigate('ChangeSpot',{spotID});
+                    }}
+                />
+            </View>
         </View>)
     }
     else{
@@ -114,10 +116,10 @@ const PHomeScreen= ({navigation})=>{
         // }
     }
     
-    const text1 = "I'm here";
+    const text1 = "I am here";
     return (
-        <View > 
-            <Text>{text1}</Text>
+        <View style = {styles.txtView}> 
+            <Text style = {styles.textColor}>{text1}</Text>
             <Switch
                 trackColor={{ false: "#767577", true: "#90ee90" }}
                 //thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
@@ -127,7 +129,7 @@ const PHomeScreen= ({navigation})=>{
             />
 
             {isNear ? <RenderSpot spot ={spot}/>: <View/>} 
-            <Text>{err}</Text>
+            <Text style = {styles.errColor}>{err}</Text>
 
         </View>
     );
@@ -144,7 +146,7 @@ const styles = StyleSheet.create({
         padding:10,
         fontWeight:"bold",
         fontSize:18,
-        color:"#f00",
+        color:"#fff",
     },
     errText:{
         alignContent:"center",
@@ -152,7 +154,22 @@ const styles = StyleSheet.create({
         fontWeight:"bold",
         fontSize:16,
         color:"#f00",
+    }, 
+    txtView:{
+        backgroundColor: "#fa5b3d",
+    },
+    textColor:{
+        fontSize:20,
+        color:'white'
+    },
+    errColor:{
+        fontSize:15,
+        color:'white'
+    },
+    btnView:{
+        backgroundColor: "#fff",
     }
+
 });
 
 export default PHomeScreen;
